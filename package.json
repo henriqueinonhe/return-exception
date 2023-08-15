@@ -1,12 +1,17 @@
 {
   "name": "return-exception",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
     "prepublishOnly": "tsc -p ."
   },
-  "keywords": ["exception", "error-handling", "typescript", "javascript"],
+  "keywords": [
+    "exception",
+    "error-handling",
+    "typescript",
+    "javascript"
+  ],
   "author": {
     "name": "Henrique Inonhe",
     "email": "henriqueinonhe@gmail.com"
