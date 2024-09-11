@@ -1,5 +1,7 @@
 import { returnException } from "./returnException";
 
+const expectType = <T>(x: T) => undefined;
+
 describe("When wrapping async function", () => {
   const fn = async (arg: "value" | "error1" | "error2" | "error3") => {
     if (arg === "value") {
@@ -34,7 +36,7 @@ describe("When wrapping async function", () => {
     describe("And function throws checked exception", () => {
       it("Returns error", () => {
         expect(
-          returnException(fn, [isError1, isError2])("error2")
+          returnException(fn, [isError1, isError2])("error2"),
         ).resolves.toEqual([undefined, "error2"]);
       });
     });
@@ -42,7 +44,7 @@ describe("When wrapping async function", () => {
     describe("And function throws unchecked exception", () => {
       it("Throws error", () => {
         expect(() =>
-          returnException(fn, [isError1, isError2])("error3")
+          returnException(fn, [isError1, isError2])("error3"),
         ).rejects.toBe("error3");
       });
     });
@@ -86,8 +88,34 @@ describe("When wrapping sync function", () => {
     describe("And function throws unchecked exception", () => {
       it("Throws error", () => {
         expect(() =>
-          returnException(fn, [isError1, isError2])("error3")
+          returnException(fn, [isError1, isError2])("error3"),
         ).toThrow("error3");
+      });
+    });
+  });
+
+  describe("When using checkers for classes", () => {
+    class SomeClass extends Error {}
+
+    const isSomeClass = (x: unknown): x is SomeClass => x instanceof SomeClass;
+
+    const fn = (arg: "value" | "error") => {
+      if (arg === "value") {
+        return "value";
+      }
+
+      throw new SomeClass();
+    };
+
+    describe("And function throws checked exception", () => {
+      it("Returns error", () => {
+        const [value, error] = returnException(fn, [isSomeClass])("error");
+
+        expectType<SomeClass | undefined>(error);
+        expectType<string | undefined>(value);
+
+        expect(value).toBe(undefined);
+        expect(error).toEqual(new SomeClass());
       });
     });
   });

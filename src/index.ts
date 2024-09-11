@@ -1,1 +1,1 @@
-export { returnException } from "./returnException";
+export { returnException, retex } from "./returnException";

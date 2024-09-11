@@ -20,10 +20,10 @@ export const returnException =
   <
     Args extends Array<unknown>,
     ReturnValue,
-    Checkers extends Array<(value: unknown) => value is {}>
+    Checkers extends Array<(value: unknown) => value is {}>,
   >(
     fn: (...args: Args) => ReturnValue,
-    checkers?: Checkers
+    checkers?: Checkers,
   ) =>
   (
     ...args: Args
@@ -68,3 +68,16 @@ export const returnException =
       return [undefined, error] as Return;
     }
   };
+
+export const retex = <
+  ReturnValue,
+  Checkers extends Array<(value: unknown) => value is {}>,
+>(
+  fn: () => ReturnValue,
+  checkers?: Checkers,
+): ReturnExceptionReturnValue<
+  ReturnValue,
+  ExtractTypeFromTypePredicate<Checkers[number]>
+> => {
+  return returnException(fn, checkers)();
+};
